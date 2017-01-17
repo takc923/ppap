@@ -1,5 +1,6 @@
 {
     "name": "PlainPauseAndPlay",
+    "short_name": "ppap",
     "manifest_version": 2,
     "version": "0.1.0",
     "description": "ニコ動とYoutubeの動画の停止・再生をどこからでも",
