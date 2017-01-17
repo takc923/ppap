@@ -1,0 +1,36 @@
+{
+    "name": "PlainPauseAndPlay",
+    "manifest_version": 2,
+    "version": "0.1.0",
+    "description": "ニコ動とYoutubeの動画の停止・再生をどこからでも",
+    "icons": {
+        "128": "icon/icon48.png",
+        "48":  "icon/icon48.png",
+        "16":  "icon/icon.png"
+    },
+    "content_scripts": [
+        {
+            "matches": ["http://www.nicovideo.jp/watch/*", "https://www.youtube.com/watch*"],
+            "js": ["ppap.js"]
+        }
+    ],
+    "commands": {
+        "toggle-play-and-stop": {
+            "suggested_key": {
+                "default": "Alt+Z"
+            },
+            "description": "Toggle play and stop"
+        }
+    },
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "permissions": ["tabs"],
+    "browser_action": {
+        "default_icon": "icon/icon.png",
+        "default_title": "niconicoamp"
+    },
+    "web_accessible_resources": [
+        "icon/*"
+    ]
+}
