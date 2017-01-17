@@ -1,5 +1,3 @@
-// todo 名前
-// todo niconico以外対応
 // todo アイコン変更
 
 const iconPathNowPlaying = "icon/pause.png"; // button click means pause when playing
@@ -19,7 +17,7 @@ chrome.tabs.onUpdated.addListener(function(updatedTabId, changeInfo) {
 function unregister(dummy, sender) {
     targetTabId = null;
     chrome.browserAction.setIcon({path: "icon/icon.png"});
-    chrome.browserAction.setTitle({title: "niconicoamp"});
+    chrome.browserAction.setTitle({title: "PlainPauseAndPlay"});
 }
 
 // play or pause if you click icon or fire shortcut key
