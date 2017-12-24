@@ -1,3 +1,5 @@
+let video = null;
+
 /**
  * www.youtube.com is SPA.
  * If landing page is https://www.youtube.com/ and doesn't load this script, this script will not get loaded even if move to video page.
@@ -14,7 +16,7 @@ function initUntilDone() {
 }
 
 function init() {
-    let video = document.querySelector("video");
+    video = document.querySelector("video");
     if (video == null) return false;
 
     // to call frontend functions from background.js
