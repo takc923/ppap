@@ -2,7 +2,7 @@
     "name": "PlainPauseAndPlay",
     "short_name": "ppap",
     "manifest_version": 2,
-    "version": "0.1.2",
+    "version": "0.2.0",
     "description": "ニコ動とYoutubeの動画の停止・再生をどこからでも",
     "icons": {
         "128": "icon/icon48.png",
@@ -11,7 +11,7 @@
     },
     "content_scripts": [
         {
-            "matches": ["http://www.nicovideo.jp/watch/*", "https://www.youtube.com/*"],
+            "matches": ["https://www.nicovideo.jp/watch/*", "https://www.youtube.com/*"],
             "js": ["ppap.js"]
         }
     ],
