@@ -1,3 +1,5 @@
+let video = null;
+
 /**
  * www.youtube.com is SPA.
  * If landing page is https://www.youtube.com/ and doesn't load this script, this script will not get loaded even if move to video page.
@@ -13,12 +15,10 @@ function initUntilDone() {
     }
 }
 
-function video() {
-    return document.querySelector("video");
-}
 
 function init() {
-    if (video() == null) return false;
+    video = document.querySelector("video");
+    if (video == null) return false;
 
     // to call frontend functions from background.js
     chrome.runtime.onMessage.addListener(
@@ -28,10 +28,10 @@ function init() {
     );
 
     // when video get played, register the tab and update icon
-    video().addEventListener("playing", callBackgroundPlay);
+    video.addEventListener("playing", callBackgroundPlay);
 
     // when video paused, update icon
-    video().addEventListener("pause", callBackgroundPause);
+    video.addEventListener("pause", callBackgroundPause);
 
     updateLatestState();
 
@@ -64,14 +64,19 @@ function updateLatestState() {
 function toggle(args, sender, sendResponse) {
     let previous = isPaused();
     if (previous) {
-        video().play();
+        console.log("video.play");
+        video.play();
     } else {
-        video().pause();
+        console.log("video.pause");
+        video.pause();
     }
-    if (previous === isPaused()) video().click();
+    if (previous === isPaused()){
+        console.log("video.click");
+        video.click();
+    }
 }
 
 // utilities
 function isPaused() {
-    return video().paused || video().ended;
+    return video.paused || video.ended;
 }
