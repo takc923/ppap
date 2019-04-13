@@ -1,4 +1,63 @@
-let video = null;
+
+class Video {
+  constructor(underlying) {
+    if (underlying == null) return;
+    // when video get played, register the tab and update icon
+    underlying.addEventListener("playing", callBackgroundPlay);
+
+    // when video paused, update icon
+    underlying.addEventListener("pause", callBackgroundPause);
+
+    this.underlying = underlying;
+  }
+  isPaused() {
+    return this.underlying.paused || this.underlying.ended;
+  }
+  toggle() {}
+  isActive() {
+    return this.underlying.offsetParent != null;
+  }
+
+  static create(host) {
+    let v = document.querySelector("video");
+    if (v == null) return new NullVideo(null);
+    switch (host) {
+      case "www.youtube.com": return new Youtube(v);
+      case "www.nicovideo.jp": return new NicoVideo(v);
+    }
+    return new NullVideo(null);
+  }
+}
+
+class NullVideo extends Video {
+  isPaused() {
+    return true;
+  }
+  isActive() {
+    return false;
+  }
+}
+
+class NicoVideo extends Video {
+  toggle() {
+    if (this.isPaused()) {
+      console.log("video.play");
+      this.underlying.play();
+    } else {
+      console.log("video.pause");
+      this.underlying.pause();
+    }
+  }
+}
+
+class Youtube extends Video {
+  toggle() {
+    console.log("video.click");
+    this.underlying.click();
+  }
+}
+
+let video = new NullVideo(null);
 
 /**
  * www.youtube.com is SPA.
@@ -7,31 +66,21 @@ let video = null;
  * And https://www.youtube.com/ inject video tag after finish loading with delay.
  * So try to init until succeed.
  */
-initUntilDone();
 
-function initUntilDone() {
-    if (!init()) {
-        setTimeout(initUntilDone, 1000);
-    }
-}
+// to call frontend functions from background.js
+chrome.runtime.onMessage.addListener(
+  function (request, sender, sendResponse) {
+      return window[request.action](request.args, sender, sendResponse);
+  }
+);
 
+setInterval(init, 1000);
 
 function init() {
-    video = document.querySelector("video");
-    if (video == null) return false;
+    if (video.isActive()) return false;
 
-    // to call frontend functions from background.js
-    chrome.runtime.onMessage.addListener(
-        function (request, sender, sendResponse) {
-            return window[request.action](request.args, sender, sendResponse);
-        }
-    );
-
-    // when video get played, register the tab and update icon
-    video.addEventListener("playing", callBackgroundPlay);
-
-    // when video paused, update icon
-    video.addEventListener("pause", callBackgroundPause);
+    video = Video.create(location.host);
+    if (!video.isActive()) return false;
 
     updateLatestState();
 
@@ -53,7 +102,7 @@ function callBackgroundPause() {
 }
 
 function updateLatestState() {
-    if (isPaused()) {
+    if (video.isPaused()) {
         callBackgroundPause();
     } else {
         callBackgroundPlay();
@@ -62,21 +111,6 @@ function updateLatestState() {
 
 //for onMessage callback functions
 function toggle(args, sender, sendResponse) {
-    let previous = isPaused();
-    if (previous) {
-        console.log("video.play");
-        video.play();
-    } else {
-        console.log("video.pause");
-        video.pause();
-    }
-    if (previous === isPaused()){
-        console.log("video.click");
-        video.click();
-    }
-}
-
-// utilities
-function isPaused() {
-    return video.paused || video.ended;
+    console.log("toggle");
+    video.toggle();
 }
