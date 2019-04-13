@@ -1,3 +1,3 @@
 function ppapLog(msg) {
-  console.log("ppap: " + msg);
+  // console.log("ppap: " + msg);
 }
