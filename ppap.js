@@ -1,4 +1,3 @@
-
 class Video {
   constructor(underlying) {
     if (underlying == null) return;
@@ -10,10 +9,14 @@ class Video {
 
     this.underlying = underlying;
   }
+
   isPaused() {
     return this.underlying.paused || this.underlying.ended;
   }
-  toggle() {}
+
+  toggle() {
+  }
+
   isActive() {
     return this.underlying.offsetParent != null;
   }
@@ -22,8 +25,10 @@ class Video {
     let v = document.querySelector("video");
     if (v == null) return new NullVideo(null);
     switch (host) {
-      case "www.youtube.com": return new Youtube(v);
-      case "www.nicovideo.jp": return new NicoVideo(v);
+      case "www.youtube.com":
+        return new Youtube(v);
+      case "www.nicovideo.jp":
+        return new NicoVideo(v);
     }
     return new NullVideo(null);
   }
@@ -33,6 +38,7 @@ class NullVideo extends Video {
   isPaused() {
     return true;
   }
+
   isActive() {
     return false;
   }
@@ -70,47 +76,47 @@ let video = new NullVideo(null);
 // to call frontend functions from background.js
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
-      return window[request.action](request.args, sender, sendResponse);
+    return window[request.action](request.args, sender, sendResponse);
   }
 );
 
 setInterval(init, 1000);
 
 function init() {
-    if (video.isActive()) return false;
+  if (video.isActive()) return false;
 
-    video = Video.create(location.host);
-    if (!video.isActive()) return false;
+  video = Video.create(location.host);
+  if (!video.isActive()) return false;
 
-    updateLatestState();
+  updateLatestState();
 
-    return true;
+  return true;
 }
 
 function callBackgroundPlay() {
-    chrome.runtime.sendMessage({
-        action: "play",
-        args: null
-    });
+  chrome.runtime.sendMessage({
+    action: "play",
+    args: null
+  });
 }
 
 function callBackgroundPause() {
-    chrome.runtime.sendMessage({
-        action: "pause",
-        args: null
-    });
+  chrome.runtime.sendMessage({
+    action: "pause",
+    args: null
+  });
 }
 
 function updateLatestState() {
-    if (video.isPaused()) {
-        callBackgroundPause();
-    } else {
-        callBackgroundPlay();
-    }
+  if (video.isPaused()) {
+    callBackgroundPause();
+  } else {
+    callBackgroundPlay();
+  }
 }
 
 //for onMessage callback functions
 function toggle(args, sender, sendResponse) {
-    console.log("toggle");
-    video.toggle();
+  console.log("toggle");
+  video.toggle();
 }
