@@ -12,7 +12,7 @@
     "content_scripts": [
         {
             "matches": ["https://www.nicovideo.jp/watch/*", "https://www.youtube.com/*"],
-            "js": ["ppap.js"]
+            "js": ["log.js", "video.js", "ppap.js"]
         }
     ],
     "commands": {
@@ -24,7 +24,7 @@
         }
     },
     "background": {
-        "scripts": ["background.js"]
+        "scripts": ["log.js", "background.js"]
     },
     "permissions": ["tabs"],
     "browser_action": {

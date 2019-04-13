@@ -1,68 +1,3 @@
-class Video {
-  constructor(underlying) {
-    if (underlying == null) return;
-    // when video get played, register the tab and update icon
-    underlying.addEventListener("playing", callBackgroundPlay);
-
-    // when video paused, update icon
-    underlying.addEventListener("pause", callBackgroundPause);
-
-    this.underlying = underlying;
-  }
-
-  isPaused() {
-    return this.underlying.paused || this.underlying.ended;
-  }
-
-  toggle() {
-  }
-
-  isActive() {
-    return this.underlying.offsetParent != null;
-  }
-
-  static create(host) {
-    let v = document.querySelector("video");
-    if (v == null) return new NullVideo(null);
-    switch (host) {
-      case "www.youtube.com":
-        return new Youtube(v);
-      case "www.nicovideo.jp":
-        return new NicoVideo(v);
-    }
-    return new NullVideo(null);
-  }
-}
-
-class NullVideo extends Video {
-  isPaused() {
-    return true;
-  }
-
-  isActive() {
-    return false;
-  }
-}
-
-class NicoVideo extends Video {
-  toggle() {
-    if (this.isPaused()) {
-      console.log("video.play");
-      this.underlying.play();
-    } else {
-      console.log("video.pause");
-      this.underlying.pause();
-    }
-  }
-}
-
-class Youtube extends Video {
-  toggle() {
-    console.log("video.click");
-    this.underlying.click();
-  }
-}
-
 let video = new NullVideo(null);
 
 /**
@@ -90,10 +25,12 @@ setInterval(monitor, 1000);
 
 function monitor() {
   if (video.isActive()) return;
+  ppapLog("monitor: video is not active");
 
   video = Video.create(location.host);
   if (!video.isActive()) return;
 
+  ppapLog("monitor: detected new video.");
   updateLatestState();
 }
 
@@ -121,6 +58,6 @@ function updateLatestState() {
 
 //for onMessage callback functions
 function toggle(args, sender, sendResponse) {
-  console.log("toggle");
+  ppapLog("toggle");
   video.toggle();
 }

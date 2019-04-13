@@ -11,7 +11,7 @@ chrome.tabs.onRemoved.addListener(function (removedTabId, removeInfo) {
 chrome.tabs.onUpdated.addListener(function(updatedTabId, changeInfo) {
     if (changeInfo.status === 'loading'
         && updatedTabId === targetTabId){
-        console.log("tab updated. call unregister()");
+        ppapLog("tab updated. call unregister()");
         unregister();
         chrome.tabs.sendMessage(updatedTabId, { action: "updateLatestState" });
     }
@@ -28,7 +28,7 @@ chrome.commands.onCommand.addListener(toggle);
 function toggle() {
     if (!targetTabId) return;
 
-    console.log("toggle");
+    ppapLog("toggle");
     chrome.tabs.sendMessage(
         targetTabId,
         { action: "toggle" },
@@ -45,14 +45,14 @@ chrome.runtime.onMessage.addListener(
 
 // for onMessage callback functions
 function play(args, sender){
-    console.log("play");
+    ppapLog("play");
     targetTabId = sender.tab.id;
     chrome.browserAction.setIcon({path: iconPathNowPlaying});
     chrome.browserAction.setTitle({title: sender.tab.title});
 }
 
 function pause(args, sender) {
-    console.log("pause");
+    ppapLog("pause");
     targetTabId = sender.tab.id;
     chrome.browserAction.setIcon({path: iconPathNowPaused});
     chrome.browserAction.setTitle({title: sender.tab.title});
