@@ -70,7 +70,7 @@ let video = new NullVideo(null);
  * If landing page is https://www.youtube.com/ and doesn't load this script, this script will not get loaded even if move to video page.
  * So https://www.youtube.com/ page load it.
  * And https://www.youtube.com/ inject video tag after finish loading with delay.
- * So try to init until succeed.
+ * So check video tag every second.
  */
 
 // to call frontend functions from background.js
@@ -80,17 +80,15 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
-setInterval(init, 1000);
+setInterval(monitor, 1000);
 
-function init() {
-  if (video.isActive()) return false;
+function monitor() {
+  if (video.isActive()) return;
 
   video = Video.create(location.host);
-  if (!video.isActive()) return false;
+  if (!video.isActive()) return;
 
   updateLatestState();
-
-  return true;
 }
 
 function callBackgroundPlay() {
